@@ -1,0 +1,9 @@
+{% if messages %}
+    {% for message in messages %}
+        <br>
+        <div class="isa_{{ message.tags }}">
+            <i class="fa fa-{{ message.tags }}"></i>
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}

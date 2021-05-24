@@ -1,0 +1,96 @@
+{% extends "includes/layout.html" %}
+{% load static %}
+{% block content %}
+    <div class="table-wrapper">
+
+        Çalışan Bilgileri
+        <table>
+            <thead>
+            </thead>
+            <tbody>
+            <tr>
+                <td><i style="font-weight: bold;"> Çalışan ID</i></td>
+                <td>{{ employee.id }}</td>
+            </tr>
+            <tr>
+                <td><i style="font-weight: bold;">Yetkili</i></td>
+                <td>
+                    {% if employee.employee.is_superuser %}
+                        <i style="color: green;font-weight: bold;">Evet</i>
+                    {% else %}
+                        <i style="color: red;font-weight: bold;">Hayır</i>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td><i style="font-weight: bold;">Adı Soyadı</i></td>
+                <td>{{ employee.employee.first_name }} {{ employee.employee.last_name }}</td>
+            </tr>
+            <tr>
+                <td><i style="font-weight: bold;">Kullanıcı Adı</i></td>
+                <td>{{ employee.employee.username }}</td>
+            </tr>
+            <tr>
+                <td><i style="font-weight: bold;">Maaş</i></td>
+                <td>{{ employee.salary }}</td>
+            </tr>
+            <tr>
+                <td><i style="font-weight: bold;">Çalıştığı Bölge Adı</i></td>
+                <td>{{ employee.field.name }}</td>
+            </tr>
+              <tr>
+                <td colspan="2"><i style="font-weight: bold;">Konum Bilgisi</i></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="box">
+                <div style="height: 750px;" id="mapid"></div>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <script>
+    var marker = L.icon({
+    iconUrl: '{% static "assets/images/marker.png" %}',
+    shadowUrl: '{% static "assets/images/marker_shadow.png" %}',
+    iconSize:     [24, 24], // size of the icon
+    shadowSize:   [50, 64], // size of the shadow
+    iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+    shadowAnchor: [4, 62],  // the same for the shadow
+    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+});
+
+
+    var mymap = L.map('mapid').setView({{ current_location }}, 13);
+    var markerHome = L.marker({{ home_location }}, ).addTo(mymap);
+    var markerCurrent = L.marker({{ current_location }}, ).addTo(mymap);
+
+    var latlngs = {{ line }};
+
+    var polyline = L.polyline(latlngs, {color: 'blue'}).addTo(mymap);
+
+
+    markerHome.bindPopup("Ev Konumu").openPopup();
+    polyline.bindPopup("Çalıştığı Bölge").openPopup();
+    markerCurrent.bindPopup("Anlık Konum").openPopup();
+
+
+
+
+    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    maxZoom: 18,
+    id: 'mapbox/streets-v11',
+    tileSize: 512,
+    zoomOffset: -1,
+    accessToken: 'pk.eyJ1Ijoib2d1emJhbGtheWEiLCJhIjoiY2twMTZmeXhuMWhkcTJ1cWd1YzFvZ2Q0ZCJ9.kccSGdYVXlUIdKPAM1iRrg'
+}).addTo(mymap);
+
+    var popup = L.popup();
+
+
+    </script>
+
+{% endblock %}

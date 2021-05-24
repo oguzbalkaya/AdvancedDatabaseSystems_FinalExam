@@ -1,0 +1,26 @@
+{% extends "includes/layout.html" %}
+{% block content %}
+
+<h3>Çalışan Listesi</h3>
+
+									<div class="table-wrapper">
+                                    {% include "includes/message.html" %}
+										<table>
+											<thead>
+												<tr>
+													<th>Çalışan ID</th>
+													<th>Adı ve Soyadı</th>
+
+												</tr>
+											</thead>
+											<tbody>
+                                             {% for employee in employees %}
+												<tr>
+													<td>{{ employee.id }}</td>
+                                                    <td><a href="/employee/{{ employee.id }}">{{ employee.employee.first_name }} {{ employee.employee.last_name }}</a></td>
+												</tr>
+                                             {% endfor %}
+											</tbody>
+										</table>
+									</div>
+{% endblock %}
